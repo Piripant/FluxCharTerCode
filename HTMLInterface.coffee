@@ -1,8 +1,3 @@
-# TODO: Make possible to delete yesBox and noBox
-# TODO: Make save/load functionality
-# TODO: Make arrows that connect boxes
-# TODO: Write functions index
-
 class HTML_els
     @propID = 'prop'
 
@@ -17,9 +12,6 @@ class HTML_els
     @interPropID = 'interProp'
     @interCmdID = 'interCmdProp'
 
-@cmdName = 'cmd' # Also used in box type
-@evalName = 'eval' # Also used in box type
-@interName = 'inter' # Also used in box type
 selectName = 'sel'
 selYesName = 'selYes'
 selNoName = 'selNo'
@@ -27,12 +19,21 @@ moveName = 'move'
 
 clickAction = ''
 @selectedBox = null
-
 lastID = 0
 
-@onload = ->
-    InitCanvas()
-    InitHTML()
+@LoadDia = ->
+    @boxes = []
+    loadString(document.getElementById("loadInput").value)
+    RestoreCtx()
+
+@RunDia = ->
+    document.getElementById("saveOutput").value = saveString()
+    @IntWorker.postMessage ['eraseVars']
+    @IntWorker.postMessage ['interprete', @selectedBox]
+
+@StopDia = ->
+    stop = true
+    swal("The diagram has been stopped")
 
 @InitHTML = ->
     HTML_els.curModeEl = document.getElementById('curMode')
@@ -46,20 +47,6 @@ lastID = 0
     HTML_els.evalPropEl = document.getElementById(HTML_els.evalPropID)
     HTML_els.interPropEl = document.getElementById(HTML_els.interPropID)
     HTML_els.interCmdEl = document.getElementById(HTML_els.interCmdID)
-
-@LoadDia = ->
-    @boxes = []
-    loadString(document.getElementById("loadInput").value)
-    RestoreCtx()
-
-@RunDia = ->
-    document.getElementById("saveOutput").value = saveString()
-    eraseVars()
-    InterpreteBox(@selectedBox)
-
-@StopDia = ->
-    stop = true
-    alert("The diagram has been stopped")
 
 @SelectType = (type) ->
     switch type
@@ -98,14 +85,16 @@ lastID = 0
 @DeleteSelBox = ->
     DeleteBoxByID(@selectedBox.boxID)
     # Deleting all box references
-    if @selectedBox.prevBox # Only if the box was conneted
-        if @selectedBox.prevBox.yesBox
-            if @selectedBox.prevBox.yesBox.boxID == @selectedBox.boxID
-                @selectedBox.prevBox.yesBox = null
+    if @selectedBox.prevBoxes.length > 0 # Only if the box was conneted
+        for i in [0...@selectedBox.prevBoxes.length]
+            prevBox = @selectedBox.prevBoxes[i]
+            if prevBox.yesBox
+                if prevBox.yesBox.boxID == @selectedBox.boxID
+                    @selectedBox.prevBoxes[i].yesBox = null
+                else
+                    @selectedBox.prevBoxes[i].noBox = null
             else
-                @selectedBox.prevBox.noBox = null
-        else
-            @selectedBox.prevBox.noBox = null
+                @selectedBox.prevBoxes[i].noBox = null
 
     @selectedBox = null
     HTML_els.propEl.setAttribute('hidden', '')
@@ -127,21 +116,25 @@ DisableAll = () ->
     if clickAction == selYesName or clickAction == selNoName # Selecting next block
         if clickedCell
             if @selectedBox != clickedCell
-                if clickAction == selYesName
-                    clickAction = selectName
-                    @selectedBox.yesBox = clickedCell
-                    @selectedBox.yesBox.prevBox = @selectedBox
+                console.log clickAction
+                if clickAction is selYesName
+                    console.log @selectedBox.yesBox isnt clickedCell
+                    if @selectedBox.yesBox isnt clickedCell # It is already the yesBox
+                        selectedBox.yesBox = clickedCell
+                        @selectedBox.yesBox.prevBoxes.push @selectedBox
                 else
-                    clickAction = selectName
-                    @selectedBox.noBox = clickedCell
-                    @selectedBox.noBox.prevBox = @selectedBox
+                    if @selectedBox.noBox isnt clickedCell
+                        @selectedBox.noBox = clickedCell
+                        console.log @selectedBox.noBox
+                        @selectedBox.noBox.prevBoxes.push @selectedBox
 
+                clickAction = selectName
                 RestoreCtx()
                 DrawSelections()
 
                 SetSelectionGUI(@selectedBox)
             else
-                alert('Cannot set next as itself!')
+                swal('Cannot set next as itself!')
 
         return # To prevent selecting the next block
 
@@ -151,14 +144,17 @@ DisableAll = () ->
             newBox = new Box(clickAction + "")
             newBox.position = new Vector(gx, gy)
             newBox.name = clickAction + lastID.toString();
-            newBox.setText('"Input command"')
+            if newBox.type isnt interName
+                newBox.setText('"Input command"')
+            else
+                newBox.setText('output("Hello!")')
             newBox.boxID = lastID
             lastID += 1
             @boxes.push newBox
             clickedCell = newBox
             DrawBox(gx, gy)
         else
-            alert('Position already occupied')
+            swal('Position already occupied')
 
     else if clickAction == moveName # Moving the @selectedBox
         if !clickedCell
@@ -168,7 +164,7 @@ DisableAll = () ->
             DrawSelections()
 
         else
-            alert('Position already occupied')
+            swal('Position already occupied')
 
         clickAction = selectName # To not stay in moving mode
         HTML_els.curModeEl.innerHTML = "Selecting"
@@ -215,18 +211,17 @@ DrawNexts = ->
         DrawConnection(@selectedBox, @selectedBox.noBox, "blue")
 
 @SetSelectionGUI = (box) ->
-    switch box.type
-        when cmdName or interName
-            if box.yesBox
-                HTML_els.nextPropEl.innerHTML = box.yesBox.name
-            else
-                HTML_els.nextPropEl.innerHTML = '...'
-        when evalName
-            if box.yesBox
-                HTML_els.YesPropEl.innerHTML = box.yesBox.name
-            else
-                HTML_els.YesPropEl.innerHTML = '...'
-            if box.noBox
-                HTML_els.NoPropEl.innerHTML = box.noBox.name
-            else
-                HTML_els.NoPropEl.innerHTML = '...'
+    if box.type is cmdName or box.type is interName
+        if box.yesBox
+            HTML_els.nextPropEl.innerHTML = box.yesBox.name
+        else
+            HTML_els.nextPropEl.innerHTML = '...'
+    else
+        if box.yesBox
+            HTML_els.YesPropEl.innerHTML = box.yesBox.name
+        else
+            HTML_els.YesPropEl.innerHTML = '...'
+        if box.noBox
+            HTML_els.NoPropEl.innerHTML = box.noBox.name
+        else
+            HTML_els.NoPropEl.innerHTML = '...'

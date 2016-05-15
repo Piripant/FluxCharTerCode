@@ -23,7 +23,6 @@ selDims = [10, 10]
     DrawAllBoxes()
 
 @DrawAllBoxes = ->
-    console.log boxes
     ctx.beginPath(); # Resets all the stroke settings and paths
     for box in boxes
         DrawBox(box, false)
@@ -53,7 +52,6 @@ selDims = [10, 10]
     closest_dist = 10000000
     for entry in startBox.entryPoints
         distance = Math.sqrt(Math.pow(entry[0]+sx-ex, 2) + Math.pow(entry[1]+sy-ey, 2))
-        console.log [entry[0]+sx, entry[1]+sy]
         if closest_dist > distance
             closest_dist = distance
             startPoint = [entry[0]+sx, entry[1]+sy]

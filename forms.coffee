@@ -45,7 +45,7 @@ class @Box
     @type = ''
     @boxID = 0
     @entryPoints = []
-    @prevBox = null
+    @prevBoxes = []
     @yesBox = null
     @noBox = null
 
@@ -55,6 +55,10 @@ class @Box
             when cmdName then @entryPoints = cmdEntries
             when evalName then @entryPoints = evalEntries
             when interName then @entryPoints = interEntries
+
+        @prevBoxes = []
+        @yesBox = null
+        @noBox = null
 
     setText: (text) ->
         @text = text
