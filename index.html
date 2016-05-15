@@ -1,0 +1,85 @@
+<html>
+  <head>
+     <script src="sweetalert.min.js"></script>
+     <script src="compiler.js"></script>
+     <script src="interface.js"></script>
+     <script src="forms.js"></script>
+     <script src="renderer.js"></script>
+     <script src="savesio.js"></script>
+     <script src="coffdia.js"></script>
+     <link rel="stylesheet" type="text/css" href="app.css">
+     <link rel="stylesheet" type="text/css" href="sweetalert.css">
+     <title>Flu(x)CharTer</title>
+  </head>
+  <body>
+
+    <div class="container">
+      <div id="sidebar">
+        <a>Cursor mode:</a><br>
+        <a id="curMode"><br></a>
+	    <p>Add new:</p>
+        <button id="CmdBox" onclick="SelectType('cmd')">Command Box</button><br>
+        <button id="EvBox" onclick="SelectType('eval')">Evaluation Box</button><br>
+        <button id="IBox" onclick="SelectType('inter')">Interface Box</button>
+
+        <div id="prop" hidden>
+          <br>
+          <p>Proprieties:</p>
+          <a>Name:</a>
+          <input id="nameInput" onchange="OnNameChange(this.value)"></input>
+          <br><br>
+          <a>Command/Evaluation:</a>
+          <input id="cmdInput" onchange="OnCommandChange(this.value)"></input>
+
+          <div id="cmdProp" hidden>
+          </div>
+
+          <div id="interProp" hidden>
+            <a>Input type:</a>
+            <select id="interType">
+              <option value="int">Integer</option>
+              <option value="dec">Decimal</option>
+              <option value="str">String</option>
+            </select>
+            <br>
+          </div>
+
+          <div id="interCmdProp" hidden="">
+              <br>
+              <a>Next Block:<br>Click to select</a>
+              <button id="nextProp" onclick="SelectType('selYes')">...</button>
+              <br><br>
+          </div>
+
+          <div id="evalProp" hidden>
+              <br>
+              <a>Yes block:<br>Click to select</a>
+              <button id="nextYesProp" onclick="SelectType('selYes')">...</button>
+
+              <br><br>
+              <a>No block:<br>Click to select</a>
+              <button id="nextNoProp" onclick="SelectType('selNo')">...</button>
+          </div>
+
+          <br>
+          <button id="delProp" onclick="DeleteSelBox()">Delete</button>
+          <button id="moveProp" onclick="SelectType('move')">Move</button>
+        </div>
+      </div>
+
+      <header id="header">
+        <div>Start drawing you diagram here!</div>
+        <br>
+        <button id="run" onclick="RunDia()">Run</button>
+        <button id="stop" onclick="StopDia()">Stop</button>
+        <textarea id="loadInput" rows="1"></textarea>
+        <button id="load" onclick="LoadDia()">Load</button>
+        <textarea id="saveOutput" rows="1"></textarea>
+      </header>
+
+      <div id="content">
+        <canvas id="diagr" width="1000" height="800" style="border:1px solid #000000;" onclick="CanvasClick(event)">
+      </div>
+    </div>
+  </body>
+</html>

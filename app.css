@@ -1,0 +1,19 @@
+.container { position:relative; padding:0 0 0 0px; }
+
+body {
+    font-family: monospace;
+}
+
+#sidebar {
+    position:absolute;
+    top:0; bottom:0; left:0;
+    width:150px;
+}
+
+#header {
+    margin:0 200px 5px 200px;
+}
+
+#content {
+    margin:5px 200px 5px 200px;
+}

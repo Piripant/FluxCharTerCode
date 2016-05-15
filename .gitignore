@@ -1,0 +1,2 @@
+*.js
+!sweetalert.min.js
