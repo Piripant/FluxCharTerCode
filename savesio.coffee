@@ -14,7 +14,7 @@
                 console.log prevBox
                 file_string += prevBox.boxID + "."
             file_string = file_string.slice 0, file_string.length-1
-        file_string += ";"
+        file_string += ".;"
 
         if box.yesBox
             file_string += box.yesBox.boxID
@@ -47,11 +47,14 @@
             if file[i][6] != ""
                 file[i][6] = file[i][6].split(".")
                 for boxID in file[i][6]
-                    console.log boxID
-                    boxes[i].prevBoxes.push GetByID(parseInt boxID)
+                    if boxID isnt ""
+                        boxes[i].prevBoxes.push GetByID(parseInt boxID)
             if file[i][7] != ""
                 boxes[i].yesBox = GetByID(parseInt file[i][7])
             if file[i][8] != ""
                 boxes[i].noBox = GetByID(parseInt file[i][8])
+
+            console.log file[i]
+        console.log boxes
     catch
         alert("File corrupted!")

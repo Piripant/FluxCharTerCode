@@ -32,8 +32,7 @@ lastID = 0
     @IntWorker.postMessage ['interprete', @selectedBox]
 
 @StopDia = ->
-    stop = true
-    swal("The diagram has been stopped")
+    @IntWorker.postMessage ['stop']
 
 @InitHTML = ->
     HTML_els.curModeEl = document.getElementById('curMode')
