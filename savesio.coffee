@@ -8,14 +8,6 @@
         file_string += box.type + ";"
         file_string += box.boxID + ";"
 
-
-        if box.prevBoxes.length > 0
-            for prevBox in box.prevBoxes
-                console.log prevBox
-                file_string += prevBox.boxID + "."
-            file_string = file_string.slice 0, file_string.length-1
-        file_string += ".;"
-
         if box.yesBox
             file_string += box.yesBox.boxID
         file_string += ";"
@@ -45,16 +37,13 @@
 
         for i in [0...boxes.length]
             if file[i][6] != ""
-                file[i][6] = file[i][6].split(".")
-                for boxID in file[i][6]
-                    if boxID isnt ""
-                        boxes[i].prevBoxes.push GetByID(parseInt boxID)
+                boxes[i].yesBox = GetByID(parseInt file[i][6])
+                console.log boxes[i].yesBox
+                boxes[i].yesBox.prevBoxes.push boxes[i]
             if file[i][7] != ""
-                boxes[i].yesBox = GetByID(parseInt file[i][7])
-            if file[i][8] != ""
-                boxes[i].noBox = GetByID(parseInt file[i][8])
+                boxes[i].noBox = GetByID(parseInt file[i][7])
+                boxes[i].noBox.prevBoxes.push boxes[i]
 
-            console.log file[i]
-        console.log boxes
-    catch
-        alert("File corrupted!")
+    catch ex
+        swal("File corrupted!")
+        console.log ex

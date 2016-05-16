@@ -13,6 +13,5 @@
     InitHTML()
 
 workerMessage = (event) ->
-    console.log event.data
     switch event.data[0]
         when 'interface' then window.interpreteInterface event.data[1], event.data[2]

@@ -88,12 +88,23 @@ lastID = 0
         for i in [0...@selectedBox.prevBoxes.length]
             prevBox = @selectedBox.prevBoxes[i]
             if prevBox.yesBox
-                if prevBox.yesBox.boxID == @selectedBox.boxID
+                if prevBox.yesBox.boxID is @selectedBox.boxID
                     @selectedBox.prevBoxes[i].yesBox = null
                 else
                     @selectedBox.prevBoxes[i].noBox = null
             else
                 @selectedBox.prevBoxes[i].noBox = null
+
+    if @selectedBox.yesBox
+        for i in [0...@selectedBox.yesBox.prevBoxes.length]
+            prevBox = @selectedBox.yesBox.prevBoxes[i]
+            if prevBox.boxID is @selectedBox.boxID
+                @selectedBox.yesBox.prevBoxes.splice i, 1
+    if @selectedBox.noBox
+        for i in [0...@selectedBox.noBox.prevBoxes.lenght]
+            prevBox = @selectedBox.noBox.prevBoxes[i]
+            if prevBox.boxID is @selectedBox.boxID
+                @selectedBox.noBox.prevBoxes.splice i, 1
 
     @selectedBox = null
     HTML_els.propEl.setAttribute('hidden', '')
