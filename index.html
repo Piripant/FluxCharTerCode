@@ -1,6 +1,7 @@
 <html>
   <head>
      <script src="sweetalert.min.js"></script>
+     <script src="instructionsIndex.js"></script>
      <script src="crossWorkerData.js"></script>
      <script src="HTMLInterface.js"></script>
      <script src="InterInterface.js"></script>
@@ -74,9 +75,9 @@
         <br>
         <button id="run" onclick="RunDia()">Run</button>
         <button id="stop" onclick="StopDia()">Stop</button>
-        <textarea id="loadInput" rows="1"></textarea>
         <button id="load" onclick="LoadDia()">Load</button>
-        <textarea id="saveOutput" rows="1"></textarea>
+        <button id="save" onclick="SaveDia()">Save</button>
+        <button id="printInstr" onclick="PrintInstuctions()">Print Index</button>
       </header>
 
       <div id="content">

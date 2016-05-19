@@ -21,13 +21,20 @@ clickAction = ''
 @selectedBox = null
 lastID = 0
 
+@SaveDia = ->
+    text = saveString()
+    swal("Here is your save", text)
+
 @LoadDia = ->
-    @boxes = []
-    loadString(document.getElementById("loadInput").value)
-    RestoreCtx()
+    swal({title: "Input save file (double click to copy)", type: "input", inputPlaceholder: "Your input here"}, loadClick)
+
+loadClick = (text) ->
+    if text isnt ""
+        window.boxes = []
+        loadString(text)
+        RestoreCtx()
 
 @RunDia = ->
-    document.getElementById("saveOutput").value = saveString()
     @IntWorker.postMessage ['eraseVars']
     @IntWorker.postMessage ['interprete', @selectedBox]
 

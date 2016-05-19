@@ -1,7 +1,6 @@
 # TODO: Make possible to delete yesBox and noBox
-# TODO: Make save/load functionality
-# TODO: Make arrows that connect boxes
 # TODO: Write functions index
+
 
 @IntWorker = null
 
