@@ -1,88 +1,110 @@
 <html>
-  <head>
-     <script src="sweetalert.min.js"></script>
-     <script src="instructionsIndex.js"></script>
-     <script src="crossWorkerData.js"></script>
-     <script src="HTMLInterface.js"></script>
-     <script src="InterInterface.js"></script>
-     <script src="forms.js"></script>
-     <script src="renderer.js"></script>
-     <script src="savesio.js"></script>
-     <script src="compiler.js"></script>
-     <script src="main.js"></script>
-     <link rel="stylesheet" type="text/css" href="app.css">
-     <link rel="stylesheet" type="text/css" href="sweetalert.min.css">
-     <title>Flu(x)CharTer</title>
-  </head>
-  <body>
 
+<head>
+    <script src="sweetalert.min.js"></script>
+    <script src="instructionsIndex.js"></script>
+    <script src="crossWorkerData.js"></script>
+    <script src="HTMLInterface.js"></script>
+    <script src="InterInterface.js"></script>
+    <script src="forms.js"></script>
+    <script src="renderer.js"></script>
+    <script src="savesio.js"></script>
+    <script src="compiler.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" href="app.css">
+    <link rel="stylesheet" type="text/css" href="sweetalert.min.css">
+    <title>Flu(x)CharTer</title>
+</head>
+
+<body>
     <div class="container">
-      <div id="sidebar">
-        <a>Cursor mode:</a><br>
-        <a id="curMode"><br></a>
-	    <p>Add new:</p>
-        <button id="CmdBox" onclick="SelectType('cmd')">Command Box</button><br>
-        <button id="EvBox" onclick="SelectType('eval')">Evaluation Box</button><br>
-        <button id="IBox" onclick="SelectType('inter')">Interface Box</button>
-
-        <div id="prop" hidden>
-          <br>
-          <p>Proprieties:</p>
-          <a>Name:</a>
-          <input id="nameInput" onchange="OnNameChange(this.value)"></input>
-          <br><br>
-          <a>Command/Evaluation:</a>
-          <input id="cmdInput" onchange="OnCommandChange(this.value)"></input>
-
-          <div id="cmdProp" hidden>
-          </div>
-
-          <div id="interProp" hidden>
-            <a>Input type:</a>
-            <select id="interType">
-              <option value="int">Integer</option>
-              <option value="dec">Decimal</option>
-              <option value="str">String</option>
-            </select>
+        <div id="sidebar">
+            <a>Cursor mode:</a>
             <br>
-          </div>
+            <a id="curMode">
+                <br>
+            </a>
+            <p>Add new:</p>
+            <button id="CmdBox" onclick="SelectType('cmd')">Command Box</button>
+            <br>
+            <button id="EvBox" onclick="SelectType('eval')">Evaluation Box</button>
+            <br>
+            <button id="IBox" onclick="SelectType('inter')">Interface Box</button>
 
-          <div id="interCmdProp" hidden="">
-              <br>
-              <a>Next Block:<br>Click to select</a>
-              <button id="nextProp" onclick="SelectType('selYes')">...</button>
-              <br><br>
-          </div>
+            <div class='generalProp' hidden>
+                <hr>
+            </div>
+            
+            <div class="prop" hidden>
+                <p>Proprieties:</p>
+                <a>Name:</a>
+                <input id="nameInput" onchange="OnNameChange(this.value)"></input>
+                <br>
+                <br>
+                <a>Command/Evaluation:</a>
+                <input id="cmdInput" onchange="OnCommandChange(this.value)"></input>
 
-          <div id="evalProp" hidden>
-              <br>
-              <a>Yes block:<br>Click to select</a>
-              <button id="nextYesProp" onclick="SelectType('selYes')">...</button>
+                <div id="cmdProp" hidden>
+                </div>
 
-              <br><br>
-              <a>No block:<br>Click to select</a>
-              <button id="nextNoProp" onclick="SelectType('selNo')">...</button>
-          </div>
+                <div id="interProp" hidden>
+                    <a>Input type:</a>
+                    <select id="interType">
+                        <option value="int">Integer</option>
+                        <option value="dec">Decimal</option>
+                        <option value="str">String</option>
+                    </select>
+                    <br>
+                </div>
+            </div>
 
-          <br>
-          <button id="delProp" onclick="DeleteSelBox()">Delete</button>
-          <button id="moveProp" onclick="SelectType('move')">Move</button>
+            <div id="interCmdProp" hidden="">
+                <br>
+                <a>Next Block:<br>Click to select</a>
+                <button id="nextProp" onclick="SelectType('selYes')">...</button>
+                <button id="delNext" onclick="DeleteNext('yes')" hidden>Remove</button>
+                <br>
+                <br>
+            </div>
+
+            <div id="evalProp" hidden>
+                <br>
+                <a>Yes block:<br>Click to select</a>
+                <button id="nextYesProp" onclick="SelectType('selYes')">...</button>
+                <button id="delYes" onclick="DeleteNext('yes')" hidden>Remove</button>
+
+                <br>
+                <br>
+                <a>No block:<br>Click to select</a>
+                <button id="nextNoProp" onclick="SelectType('selNo')">...</button>
+                <button id="delNo" onclick="DeleteNext('no')" hidden>Remove</button>
+            </div>
+
+            <br>
+
+            <div class='prop' hidden>
+                <button id="delProp" onclick="DeleteSelBox()">Delete</button>
+            </div>
+
+            <div class='generalProp' hidden>
+                <button id="moveProp" onclick="SelectType('move')">Move</button>
+            </div>
         </div>
-      </div>
 
-      <header id="header">
-        <div>Start drawing you diagram here!</div>
-        <br>
-        <button id="run" onclick="RunDia()">Run</button>
-        <button id="stop" onclick="StopDia()">Stop</button>
-        <button id="load" onclick="LoadDia()">Load</button>
-        <button id="save" onclick="SaveDia()">Save</button>
-        <button id="printInstr" onclick="PrintInstuctions()">Print Index</button>
-      </header>
+        <div id="header">
+            <div>Start drawing you diagram here!</div>
+            <br>
+            <button id="run" onclick="RunDia()">Run</button>
+            <button id="stop" onclick="StopDia()">Stop</button>
+            <button id="load" onclick="LoadDia()">Load</button>
+            <button id="save" onclick="SaveDia()">Save</button>
+            <button id="printInstr" onclick="PrintInstuctions()">Print Index</button>
+        </div>
 
-      <div id="content">
-        <canvas id="diagr" width="1000" height="800" style="border:1px solid #000000;" onclick="CanvasClick(event)">
-      </div>
+        <div id="content">
+            <canvas id="diagr" width="1000" height="800" style="border:1px solid #000000;" onclick="CanvasClick(event)">
+        </div>
     </div>
-  </body>
+</body>
+
 </html>

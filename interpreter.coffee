@@ -54,13 +54,16 @@ InterpreteBox = (startBox) ->
 
                 return
 
-            else
+            else if startBox.type is evalName
                 if eval startBox.compText
                     if startBox.yesBox
                         InterpreteBox(startBox.yesBox)
                 else
                     if startBox.noBox
                         InterpreteBox(startBox.noBox)
+            else
+                if startBox.yesBox
+                    InterpreteBox(startBox.yesBox)
 
         catch ex
             postMessage ['interface', "intprtAlert('An execution error was raised! See console for details')", vars_dict]

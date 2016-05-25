@@ -1,11 +1,15 @@
 class HTML_els
-    @propID = 'prop'
+    @propClass = 'prop'
+    @genPropID = 'generalProp'
 
     @nameID = 'nameInput'
     @commandID = 'cmdInput'
     @nextPropID = 'nextProp'
+    @delNextID = 'delNext'
     @nextYesPropID = 'nextYesProp'
+    @delYesID = 'delYes'
     @nextNoPropID = 'nextNoProp'
+    @delNoID = 'delNo'
 
     @cmdPropID = 'cmdProp'
     @evalPropID = 'evalProp'
@@ -19,11 +23,39 @@ moveName = 'move'
 
 clickAction = ''
 @selectedBox = null
-lastID = 0
+lastID = 2
+
+@InitHTML = ->
+    HTML_els.curModeEl = document.getElementById 'curMode'
+    HTML_els.propEl = document.getElementsByClassName HTML_els.propClass # Array
+    HTML_els.genPropEl = document.getElementsByClassName HTML_els.genPropID
+    HTML_els.nameEl = document.getElementById HTML_els.nameID
+    HTML_els.commandEl = document.getElementById HTML_els.commandID
+    HTML_els.nextPropEl = document.getElementById HTML_els.nextPropID
+    HTML_els.delNextEl = document.getElementById HTML_els.delNextID
+    HTML_els.YesPropEl = document.getElementById HTML_els.nextYesPropID
+    HTML_els.delYesEl = document.getElementById HTML_els.delYesID
+    HTML_els.NoPropEl = document.getElementById HTML_els.nextNoPropID
+    HTML_els.delNoEl = document.getElementById HTML_els.delNoID
+    HTML_els.cmdPropEl = document.getElementById HTML_els.cmdPropID
+    HTML_els.evalPropEl = document.getElementById HTML_els.evalPropID
+    HTML_els.interPropEl = document.getElementById HTML_els.interPropID
+    HTML_els.interCmdEl = document.getElementById HTML_els.interCmdID
+
+#############################################################
+
+ ####    ##   #      #      #####    ##    ####  #    #  ####
+#    #  #  #  #      #      #    #  #  #  #    # #   #  #
+#      #    # #      #      #####  #    # #      ####    ####
+#      ###### #      #      #    # ###### #      #  #        #
+#    # #    # #      #      #    # #    # #    # #   #  #    #
+ ####  #    # ###### ###### #####  #    #  ####  #    #  ####
+
+##############################################################
 
 @SaveDia = ->
     text = saveString()
-    swal("Here is your save", text)
+    swal({title:"Here is your save", text:"<textarea rows=20 cols=50 readonly=true style=\"resize:none\">" + text + "</textarea>", html: true})
 
 @LoadDia = ->
     swal({title: "Input save file (double click to copy)", type: "input", inputPlaceholder: "Your input here"}, loadClick)
@@ -36,23 +68,10 @@ loadClick = (text) ->
 
 @RunDia = ->
     @IntWorker.postMessage ['eraseVars']
-    @IntWorker.postMessage ['interprete', @selectedBox]
+    @IntWorker.postMessage ['interprete', @boxes[0]]
 
 @StopDia = ->
     @IntWorker.postMessage ['stop']
-
-@InitHTML = ->
-    HTML_els.curModeEl = document.getElementById('curMode')
-    HTML_els.propEl = document.getElementById(HTML_els.propID)
-    HTML_els.nameEl = document.getElementById(HTML_els.nameID)
-    HTML_els.commandEl = document.getElementById(HTML_els.commandID)
-    HTML_els.nextPropEl = document.getElementById(HTML_els.nextPropID)
-    HTML_els.YesPropEl = document.getElementById(HTML_els.nextYesPropID)
-    HTML_els.NoPropEl = document.getElementById(HTML_els.nextNoPropID)
-    HTML_els.cmdPropEl = document.getElementById(HTML_els.cmdPropID)
-    HTML_els.evalPropEl = document.getElementById(HTML_els.evalPropID)
-    HTML_els.interPropEl = document.getElementById(HTML_els.interPropID)
-    HTML_els.interCmdEl = document.getElementById(HTML_els.interCmdID)
 
 @SelectType = (type) ->
     switch type
@@ -78,7 +97,15 @@ loadClick = (text) ->
             clickAction = moveName
             HTML_els.curModeEl.innerHTML = "Move Box"
 
-# TODO: write a function which changes the gui cursor mode
+@DeleteNext = (type) ->
+    if type is 'yes'
+        @selectedBox.yesBox = null
+    else
+        @selectedBox.noBox = null
+
+    SetSelectionGUI(@selectedBox)
+    RestoreCtx()
+    DrawSelections()
 
 @OnNameChange = (text) ->
     @selectedBox.name = text
@@ -114,14 +141,95 @@ loadClick = (text) ->
                 @selectedBox.noBox.prevBoxes.splice i, 1
 
     @selectedBox = null
-    HTML_els.propEl.setAttribute('hidden', '')
+    HideAllEl(HTML_els.propEl)
+    HideAllEl(HTML_els.genPropEl)
+    DisableAll()
     RestoreCtx()
 
-DisableAll = () ->
+##########################################################
+
+#    # ##### #    # #         #    # ##### # #       ####
+#    #   #   ##  ## #         #    #   #   # #      #
+######   #   # ## # #         #    #   #   # #       ####
+#    #   #   #    # #         #    #   #   # #           #
+#    #   #   #    # #         #    #   #   # #      #    #
+#    #   #   #    # ######     ####    #   # ######  ####
+
+##########################################################
+
+DisableAll = ->
     HTML_els.cmdPropEl.setAttribute('hidden', '')
     HTML_els.evalPropEl.setAttribute('hidden', '')
     HTML_els.interPropEl.setAttribute('hidden', '')
     HTML_els.interCmdEl.setAttribute('hidden', '')
+
+HideAllEl = (el_arr) ->
+    for i in [0...el_arr.length]
+        el_arr[i].setAttribute('hidden', '')
+
+ShowAllEl = (el_arr) ->
+    for i in [0...el_arr.length]
+        el_arr[i].removeAttribute('hidden')
+
+HTML_SetAttributes = (box) ->
+    HTML_els.curModeEl.innerHTML = "Selecting"
+    if box.type is 'start' or box.type is 'end'
+        HideAllEl(HTML_els.propEl)
+    else
+        ShowAllEl(HTML_els.propEl)
+        HTML_els.nameEl.value = box.name
+        HTML_els.commandEl.value = box.text
+
+
+    ShowAllEl(HTML_els.genPropEl)
+    DisableAll()
+    if box.type is cmdName
+        HTML_els.cmdPropEl.removeAttribute('hidden')
+        HTML_els.interCmdEl.removeAttribute('hidden')
+
+    else if box.type is interName
+        HTML_els.interPropEl.removeAttribute('hidden')
+        HTML_els.interCmdEl.removeAttribute('hidden')
+
+    else if box.type is evalName
+        HTML_els.evalPropEl.removeAttribute('hidden')
+
+    else if box.type is 'start'
+        HTML_els.interCmdEl.removeAttribute('hidden')
+
+@SetSelectionGUI = (box) ->
+    if box.type is cmdName or box.type is interName or box.type is 'start'
+        if box.yesBox
+            HTML_els.nextPropEl.innerHTML = box.yesBox.name
+            console.log HTML_els.delNextEl
+            HTML_els.delNextEl.removeAttribute('hidden')
+        else
+            HTML_els.nextPropEl.innerHTML = '...'
+            HTML_els.delNextEl.setAttribute('hidden', '')
+    else
+        if box.yesBox
+            HTML_els.YesPropEl.innerHTML = box.yesBox.name
+            HTML_els.delYesEl.removeAttribute('hidden')
+        else
+            HTML_els.YesPropEl.innerHTML = '...'
+            HTML_els.delYesEl.setAttribute('hidden', '')
+        if box.noBox
+            HTML_els.NoPropEl.innerHTML = box.noBox.name
+            HTML_els.delNoEl.removeAttribute('hidden')
+        else
+            HTML_els.NoPropEl.innerHTML = '...'
+            HTML_els.delNoEl.setAttribute('hidden', '')
+
+#########################################
+
+ ####    ##   #    # #    #   ##    ####
+#    #  #  #  ##   # #    #  #  #  #
+#      #    # # #  # #    # #    #  ####
+#      ###### #  # # #    # ######      #
+#    # #    # #   ##  #  #  #    # #    #
+ ####  #    # #    #   ##   #    #  ####
+
+#########################################
 
 @CanvasClick = (event) ->
     x = event.offsetX
@@ -132,17 +240,14 @@ DisableAll = () ->
     clickedCell = GetBoxByCoords(gx, gy)
     if clickAction == selYesName or clickAction == selNoName # Selecting next block
         if clickedCell
-            if @selectedBox != clickedCell
-                console.log clickAction
+            if @selectedBox != clickedCell and clickedCell.type isnt 'start'
                 if clickAction is selYesName
-                    console.log @selectedBox.yesBox isnt clickedCell
                     if @selectedBox.yesBox isnt clickedCell # It is already the yesBox
                         selectedBox.yesBox = clickedCell
                         @selectedBox.yesBox.prevBoxes.push @selectedBox
                 else
                     if @selectedBox.noBox isnt clickedCell
                         @selectedBox.noBox = clickedCell
-                        console.log @selectedBox.noBox
                         @selectedBox.noBox.prevBoxes.push @selectedBox
 
                 clickAction = selectName
@@ -151,7 +256,7 @@ DisableAll = () ->
 
                 SetSelectionGUI(@selectedBox)
             else
-                swal('Cannot set next as itself!')
+                swal('Cannot set next as itself or start!')
 
         return # To prevent selecting the next block
 
@@ -174,7 +279,7 @@ DisableAll = () ->
             swal('Position already occupied')
 
     else if clickAction == moveName # Moving the @selectedBox
-        if !clickedCell
+        if not clickedCell
             @selectedBox.position.x = gx
             @selectedBox.position.y = gy
             RestoreCtx()
@@ -192,27 +297,14 @@ DisableAll = () ->
         RestoreCtx()
         @selectedBox = clickedCell
 
-        HTML_els.curModeEl.innerHTML = "Selecting"
-        HTML_els.propEl.removeAttribute('hidden')
-        HTML_els.nameEl.value = @selectedBox.name
-        HTML_els.commandEl.value = @selectedBox.text
-
+        HTML_SetAttributes(@selectedBox)
         SetSelectionGUI(@selectedBox)
         DrawSelections()
 
-        DisableAll()
-        switch @selectedBox.type
-            when cmdName
-                HTML_els.cmdPropEl.removeAttribute('hidden')
-                HTML_els.interCmdEl.removeAttribute('hidden')
-            when interName
-                HTML_els.interPropEl.removeAttribute('hidden')
-                HTML_els.interCmdEl.removeAttribute('hidden')
-            when evalName then HTML_els.evalPropEl.removeAttribute('hidden')
-
     else
         RestoreCtx()
-        HTML_els.propEl.setAttribute('hidden', '')
+        HideAllEl(HTML_els.propEl)
+        HideAllEl(HTML_els.genPropEl)
         DisableAll()
 
 DrawSelections = ->
@@ -226,19 +318,3 @@ DrawNexts = ->
     if @selectedBox.noBox
         DrawSelection(@selectedBox.noBox.position.x, @selectedBox.noBox.position.y, "blue")
         DrawConnection(@selectedBox, @selectedBox.noBox, "blue")
-
-@SetSelectionGUI = (box) ->
-    if box.type is cmdName or box.type is interName
-        if box.yesBox
-            HTML_els.nextPropEl.innerHTML = box.yesBox.name
-        else
-            HTML_els.nextPropEl.innerHTML = '...'
-    else
-        if box.yesBox
-            HTML_els.YesPropEl.innerHTML = box.yesBox.name
-        else
-            HTML_els.YesPropEl.innerHTML = '...'
-        if box.noBox
-            HTML_els.NoPropEl.innerHTML = box.noBox.name
-        else
-            HTML_els.NoPropEl.innerHTML = '...'

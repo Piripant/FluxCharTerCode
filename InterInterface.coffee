@@ -5,7 +5,6 @@ vars_dict = {}
 inputType = ''
 
 @interpreteInterface = (code, vars) ->
-    console.log vars
     vars_dict = vars
     eval code
 

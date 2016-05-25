@@ -8,8 +8,10 @@
     @IntWorker = new Worker("interpreter.js")
     @IntWorker.postMessage ['init']
     @IntWorker.onmessage = workerMessage
+    InitForms()
     InitCanvas()
     InitHTML()
+    DrawAllBoxes()
 
 workerMessage = (event) ->
     switch event.data[0]

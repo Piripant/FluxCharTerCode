@@ -74,6 +74,8 @@ selDims = [10, 10]
       when cmdName then DrawCmd(box.position.x, box.position.y, single)
       when evalName then DrawEval(box.position.x, box.position.y, single)
       when interName then DrawInter(box.position.x, box.position.y, single)
+      when 'start' then DrawCmd(box.position.x, box.position.y, single)
+      when 'end' then DrawCmd(box.position.x, box.position.y, single)
 
 @DrawCmd = (x, y, single=true) ->
     if single # Only if drawing a single rect

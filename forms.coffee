@@ -41,13 +41,10 @@ class @Box
     @name = ''
     @text = '42'
     @compText = ''
-    @position = new Vector 0, 0
-    @type = ''
     @boxID = 0
     @entryPoints = []
     @prevBoxes = []
-    @yesBox = null
-    @noBox = null
+
 
     constructor: (type) ->
         @type = type
@@ -59,6 +56,7 @@ class @Box
         @prevBoxes = []
         @yesBox = null
         @noBox = null
+        @position = new Vector 0, 0
 
     setText: (text) ->
         @text = text
@@ -67,8 +65,30 @@ class @Box
 
 @boxes = []
 
+@InitForms = ->
+    startingBox = new Box('start')
+    endingBox = new Box('end')
+
+    startingBox.boxID = 0
+    startingBox.position.x = 520
+    startingBox.position.y = 208
+    startingBox.name = 'Start'
+    startingBox.text = 'Start'
+    startingBox.entryPoints = cmdEntries
+
+    endingBox.boxID = 1
+    endingBox.position.x = 520
+    endingBox.position.y = 416
+    endingBox.name = 'End'
+    endingBox.text = 'End'
+    endingBox.entryPoints = cmdEntries
+
+    @init_boxes = [startingBox, endingBox]
+    @boxes = init_boxes
+
 @GetBoxByCoords = (x, y) ->
     for box in @boxes
+        console.log box
         if box.position.x == x and box.position.y == y
             return box
 
