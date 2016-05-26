@@ -42,9 +42,6 @@ class @Box
     @text = '42'
     @compText = ''
     @boxID = 0
-    @entryPoints = []
-    @prevBoxes = []
-
 
     constructor: (type) ->
         @type = type
@@ -88,7 +85,6 @@ class @Box
 
 @GetBoxByCoords = (x, y) ->
     for box in @boxes
-        console.log box
         if box.position.x == x and box.position.y == y
             return box
 

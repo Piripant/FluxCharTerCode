@@ -36,7 +36,7 @@
             box.boxID = parseInt line[5]
             newBoxes.push box
 
-        for i in [0...boxes.length]
+        for i in [0...newBoxes.length]
             if file[i][6] != ""
                 newBoxes[i].yesBox = GetByID(parseInt file[i][6])
                 newBoxes[i].yesBox.prevBoxes.push boxes[i]
@@ -48,5 +48,4 @@
 
     catch ex
         swal("File corrupted!")
-        InitForms()
         console.log ex

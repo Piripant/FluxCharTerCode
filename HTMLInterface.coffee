@@ -42,6 +42,11 @@ lastID = 2
     HTML_els.interPropEl = document.getElementById HTML_els.interPropID
     HTML_els.interCmdEl = document.getElementById HTML_els.interCmdID
 
+    document.getElementById('diagr').onselectstart = -> return false
+    document.getElementById('diagr').onmousemove = CanvasDrag
+    document.getElementById('diagr').onmouseup = CanvasUp
+    document.onmouseup = DocumentUp
+
 #############################################################
 
  ####    ##   #      #      #####    ##    ####  #    #  ####
@@ -140,6 +145,8 @@ loadClick = (text) ->
                 @selectedBox.noBox.prevBoxes.splice i, 1
 
     @selectedBox = null
+    clickAction = selectName
+    SelectType(clickAction)
     HideAllEl(HTML_els.propEl)
     HideAllEl(HTML_els.genPropEl)
     DisableAll()
@@ -200,7 +207,6 @@ HTML_SetAttributes = (box) ->
     if box.type is cmdName or box.type is interName or box.type is 'start'
         if box.yesBox
             HTML_els.nextPropEl.innerHTML = box.yesBox.name
-            console.log HTML_els.delNextEl
             HTML_els.delNextEl.removeAttribute('hidden')
         else
             HTML_els.nextPropEl.innerHTML = '...'
@@ -230,7 +236,33 @@ HTML_SetAttributes = (box) ->
 
 #########################################
 
+isMouseDown = false
+
+@CanvasUp = (event) ->
+    isMouseDown = false
+
+@DocumentUp = (event) ->
+    isMouseDown = false
+
+@CanvasDrag = (event) ->
+    if selectedBox and isMouseDown
+        console.log "Moving"
+        x = event.offsetX
+        y = event.offsetY
+        gx = Math.round(x/(boxSize[0]+gridDist))*(boxSize[0]+gridDist)
+        gy = Math.round(y/(boxSize[1]+gridDist))*(boxSize[1]+gridDist)
+
+        overingCell = GetBoxByCoords(gx, gy)
+        if not overingCell
+            selectedBox.position.x = gx
+            selectedBox.position.y = gy
+            RestoreCtx()
+            DrawSelections()
+
 @CanvasClick = (event) ->
+    isMouseDown = true
+    console.log "Down!"
+
     x = event.offsetX
     y = event.offsetY
     gx = Math.round(x/(boxSize[0]+gridDist))*(boxSize[0]+gridDist)
@@ -242,21 +274,22 @@ HTML_SetAttributes = (box) ->
             if @selectedBox != clickedCell and clickedCell.type isnt 'start'
                 if clickAction is selYesName
                     if @selectedBox.yesBox isnt clickedCell # It is already the yesBox
-                        selectedBox.yesBox = clickedCell
+                        @selectedBox.yesBox = clickedCell
                         @selectedBox.yesBox.prevBoxes.push @selectedBox
                 else
                     if @selectedBox.noBox isnt clickedCell
                         @selectedBox.noBox = clickedCell
                         @selectedBox.noBox.prevBoxes.push @selectedBox
 
-                clickAction = selectName
                 RestoreCtx()
                 DrawSelections()
-
                 SetSelectionGUI(@selectedBox)
             else
+                HTML_els.curModeEl.innerHTML = 'Selecting'
                 swal('Cannot set next as itself or start!')
 
+        clickAction = selectName
+        HTML_els.curModeEl.innerHTML = 'Selecting'
         return # To prevent selecting the next block
 
     else if clickAction == cmdName or clickAction == evalName or clickAction == interName # Adding new block
@@ -292,6 +325,7 @@ HTML_SetAttributes = (box) ->
         return # To not select the move position
 
     clickAction = selectName
+    console.log clickedCell
     if clickedCell # Selecting a box
         RestoreCtx()
         @selectedBox = clickedCell
@@ -301,10 +335,13 @@ HTML_SetAttributes = (box) ->
         DrawSelections()
 
     else
+        @selectedBox = null
         RestoreCtx()
         HideAllEl(HTML_els.propEl)
         HideAllEl(HTML_els.genPropEl)
         DisableAll()
+
+    return # To prevent text highlighting
 
 DrawSelections = ->
     DrawSelection(@selectedBox.position.x, @selectedBox.position.y)
