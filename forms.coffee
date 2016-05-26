@@ -52,6 +52,8 @@ class @Box
             when cmdName then @entryPoints = cmdEntries
             when evalName then @entryPoints = evalEntries
             when interName then @entryPoints = interEntries
+            when 'start' then @entryPoints = cmdEntries
+            when 'end' then @entryPoints = cmdEntries
 
         @prevBoxes = []
         @yesBox = null
@@ -74,14 +76,12 @@ class @Box
     startingBox.position.y = 208
     startingBox.name = 'Start'
     startingBox.text = 'Start'
-    startingBox.entryPoints = cmdEntries
 
     endingBox.boxID = 1
     endingBox.position.x = 520
     endingBox.position.y = 416
     endingBox.name = 'End'
     endingBox.text = 'End'
-    endingBox.entryPoints = cmdEntries
 
     @init_boxes = [startingBox, endingBox]
     @boxes = init_boxes

@@ -24,7 +24,7 @@ interfaceResponse = (vars) ->
     ResumeInterpreter()
 
 ResumeInterpreter = ->
-    if lastNextBox
+    if lastNextBox and running
         InterpreteBox(lastNextBox)
 
 StopInterpreter = ->

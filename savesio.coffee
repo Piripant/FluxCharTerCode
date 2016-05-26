@@ -22,6 +22,7 @@
     return file_string
 
 @loadString = (file_string) ->
+    newBoxes = []
     try
         file = file_string.split "|"
         for i in [0...file.length]
@@ -33,17 +34,19 @@
             box.setText line[1]
             box.position = new Vector(parseInt(line[2]), parseInt(line[3]))
             box.boxID = parseInt line[5]
-            @boxes.push box
+            newBoxes.push box
 
         for i in [0...boxes.length]
             if file[i][6] != ""
-                boxes[i].yesBox = GetByID(parseInt file[i][6])
-                console.log boxes[i].yesBox
-                boxes[i].yesBox.prevBoxes.push boxes[i]
+                newBoxes[i].yesBox = GetByID(parseInt file[i][6])
+                newBoxes[i].yesBox.prevBoxes.push boxes[i]
             if file[i][7] != ""
-                boxes[i].noBox = GetByID(parseInt file[i][7])
-                boxes[i].noBox.prevBoxes.push boxes[i]
+                newBoxes[i].noBox = GetByID(parseInt file[i][7])
+                newBoxes[i].noBox.prevBoxes.push boxes[i]
+
+        @boxes = newBoxes
 
     catch ex
         swal("File corrupted!")
+        InitForms()
         console.log ex

@@ -1,7 +1,7 @@
 functions_index = {
     "pi": "The constant of PI",
     "sin": "The sine of an angle",
-    "cos": "The cosing of an angle",
+    "cos": "The cosine of an angle",
     "tan": "The tangent of an angle",
     "abs": "The absolute value of a variable",
     "mod": "The module operator",

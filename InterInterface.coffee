@@ -9,17 +9,17 @@ inputType = ''
     eval code
 
 intprtAlert = (text) ->
-    swal({title: text.toString(), animation: "none", allowEscapeKey: false}, onSwalClick)
+    swal({title: text.toString(), animation: "none", allowEscapeKey: false}).then(onSwalClick)
 
 intprtPrompt = (text) ->
-    swal({title: text.toString(), animation: "none", allowEscapeKey: false, type: "input", inputPlaceholder: "Your input here"}, onSwalInput)
+    swal({title: text.toString(), animation: "none", allowEscapeKey: false, type: "input", inputPlaceholder: "Your input here"}).then(onSwalClick)
 
 onSwalInput = (input_text) ->
-    setTimeout resumeMessage, 700
+    setTimeout resumeMessage, 500
     return input_text
 
 onSwalClick = ->
-    setTimeout resumeMessage, 700
+    setTimeout resumeMessage, 500
 
 resumeMessage = ->
     IntWorker.postMessage ['interResponse', vars_dict]

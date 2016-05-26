@@ -55,14 +55,13 @@ lastID = 2
 
 @SaveDia = ->
     text = saveString()
-    swal({title:"Here is your save", text:"<textarea rows=20 cols=50 readonly=true style=\"resize:none\">" + text + "</textarea>", html: true})
+    swal({title: "Here is your save", html:"<span>(double click to copy)</span><br><br><textarea rows=20 cols=50 readonly=true style=\"resize:none\">" + text + "</textarea>"})
 
 @LoadDia = ->
-    swal({title: "Input save file (double click to copy)", type: "input", inputPlaceholder: "Your input here"}, loadClick)
+    swal({title: "Input save file", input: 'text', inputPlaceholder: "Your input here"}).then(loadClick)
 
 loadClick = (text) ->
     if text isnt ""
-        window.boxes = []
         loadString(text)
         RestoreCtx()
 
