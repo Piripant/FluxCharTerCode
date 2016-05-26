@@ -1,5 +1,5 @@
 # FluxCharTer
-A flux diagrams interpreter written in CoffeeScript, fully available at http://piripant.github.io/fluxcharter
+A flux diagrams interpreter written in CoffeeScript, fully available [here](http://piripant.github.io/fluxcharter)
 Built with the help of SweetAlert2 to display alert and prompt boxes
 
 You can write simple classic flux diagrams in the editor, and try them, right away!
