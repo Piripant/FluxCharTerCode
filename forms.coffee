@@ -61,6 +61,20 @@ class @Box
         @text = text
         @compText = compile(text, @type)
 
+    copy: ->
+        copied = new Box(@type)
+        copied.name = @name
+        copied.text = @text
+        copied.compText = @compText
+        copied.boxID = @boxID
+        copied.prevBoxes = @prevBoxes
+        copied.yesBox = @yesBox
+        copied.noBox = @noBox
+        copied.position = new Vector 0, 0
+        copied.position.x = @position.x
+        copied.position.y = @position.y
+        return copied
+
 
 @boxes = []
 
@@ -83,20 +97,26 @@ class @Box
     @init_boxes = [startingBox, endingBox]
     @boxes = init_boxes
 
-@GetBoxByCoords = (x, y) ->
-    for box in @boxes
+@CopyBoxes = (boxes=@boxes) ->
+    cboxes = []
+    for box in boxes
+        cboxes.push box.copy()
+    return cboxes
+
+@GetBoxByCoords = (x, y, boxes=@boxes) ->
+    for box in boxes
         if box.position.x == x and box.position.y == y
             return box
 
     return false
 
-@DeleteBoxByID = (id) ->
-    for i in [0...@boxes.length]
-        if @boxes[i].boxID is id
-            @boxes.splice i, 1
+@DeleteBoxByID = (id, boxes=@boxes) ->
+    for i in [0...boxes.length]
+        if boxes[i].boxID is id
+            boxes.splice i, 1
             return
 
-@GetByID = (id) ->
-    for i in [0...@boxes.length]
-        if @boxes[i].boxID is id
-            return @boxes[i]
+@GetByID = (id, boxes=@boxes) ->
+    for i in [0...boxes.length]
+        if boxes[i].boxID is id
+            return boxes[i]

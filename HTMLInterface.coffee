@@ -246,7 +246,6 @@ isMouseDown = false
 
 @CanvasDrag = (event) ->
     if selectedBox and isMouseDown
-        console.log "Moving"
         x = event.offsetX
         y = event.offsetY
         gx = Math.round(x/(boxSize[0]+gridDist))*(boxSize[0]+gridDist)
@@ -261,7 +260,6 @@ isMouseDown = false
 
 @CanvasClick = (event) ->
     isMouseDown = true
-    console.log "Down!"
 
     x = event.offsetX
     y = event.offsetY

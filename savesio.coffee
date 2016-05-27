@@ -36,13 +36,14 @@
             box.boxID = parseInt line[5]
             newBoxes.push box
 
+        console.log newBoxes
         for i in [0...newBoxes.length]
             if file[i][6] != ""
-                newBoxes[i].yesBox = GetByID(parseInt file[i][6])
-                newBoxes[i].yesBox.prevBoxes.push boxes[i]
+                newBoxes[i].yesBox = GetByID(parseInt(file[i][6]), newBoxes)
+                newBoxes[i].yesBox.prevBoxes.push newBoxes[i]
             if file[i][7] != ""
-                newBoxes[i].noBox = GetByID(parseInt file[i][7])
-                newBoxes[i].noBox.prevBoxes.push boxes[i]
+                newBoxes[i].noBox = GetByID(parseInt(file[i][7]), newBoxes)
+                newBoxes[i].noBox.prevBoxes.push newBoxes[i]
 
         @boxes = newBoxes
 
