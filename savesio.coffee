@@ -22,6 +22,7 @@
     return file_string
 
 @loadString = (file_string) ->
+    swal({title: "Loading", showConfirmButton: false})
     newBoxes = []
     try
         file = file_string.split "|"
@@ -34,9 +35,9 @@
             box.setText line[1]
             box.position = new Vector(parseInt(line[2]), parseInt(line[3]))
             box.boxID = parseInt line[5]
+            @lastID = box.boxID + 1
             newBoxes.push box
 
-        console.log newBoxes
         for i in [0...newBoxes.length]
             if file[i][6] != ""
                 newBoxes[i].yesBox = GetByID(parseInt(file[i][6]), newBoxes)
@@ -50,3 +51,6 @@
     catch ex
         swal("File corrupted!")
         console.log ex
+
+    finally
+        swal.close()

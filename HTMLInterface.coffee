@@ -23,7 +23,7 @@ moveName = 'move'
 
 clickAction = ''
 @selectedBox = null
-lastID = 2
+@lastID = 2
 
 @InitHTML = ->
     HTML_els.curModeEl = document.getElementById 'curMode'
@@ -58,9 +58,18 @@ lastID = 2
 
 ##############################################################
 
+@NewDia = ->
+    swal({title: "Warning!", text: "If you haven't saved all data will be lost", confirmButtonText: 'Continue', showCancelButton: true, type: 'warning'}).then(newClick)
+
+newClick = (confirm) ->
+    console.log confirm
+    if confirm
+        InitForms()
+        RestoreCtx()
+
 @SaveDia = ->
     text = saveString()
-    swal({title: "Here is your save", html:"<span>(double click to copy)</span><br><br><textarea rows=20 cols=50 readonly=true style=\"resize:none\">" + text + "</textarea>"})
+    swal({title: "Here is your save", html:"<span>(double click + CTRL+C to copy)</span><br><br><textarea rows=20 cols=50 readonly=true style=\"resize:none\">" + text + "</textarea>"})
 
 @LoadDia = ->
     swal({title: "Input save file", input: 'text', inputPlaceholder: "Your input here"}).then(loadClick)
@@ -295,13 +304,13 @@ isMouseDown = false
             # Add differentiation between varius block type
             newBox = new Box(clickAction + "")
             newBox.position = new Vector(gx, gy)
-            newBox.name = clickAction + lastID.toString();
+            newBox.name = clickAction + @lastID.toString();
             if newBox.type isnt interName
                 newBox.setText('"Input command"')
             else
                 newBox.setText('output("Hello!")')
-            newBox.boxID = lastID
-            lastID += 1
+            newBox.boxID = @lastID
+            @lastID += 1
             @boxes.push newBox
             clickedCell = newBox
             DrawBox(gx, gy)
@@ -323,7 +332,6 @@ isMouseDown = false
         return # To not select the move position
 
     clickAction = selectName
-    console.log clickedCell
     if clickedCell # Selecting a box
         RestoreCtx()
         @selectedBox = clickedCell
@@ -338,8 +346,6 @@ isMouseDown = false
         HideAllEl(HTML_els.propEl)
         HideAllEl(HTML_els.genPropEl)
         DisableAll()
-
-    return # To prevent text highlighting
 
 DrawSelections = ->
     DrawSelection(@selectedBox.position.x, @selectedBox.position.y)
