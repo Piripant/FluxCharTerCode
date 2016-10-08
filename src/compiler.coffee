@@ -1,7 +1,7 @@
-# Add all math's functions
+# All math's functions
 math_funcs = {"pi": "Math.PI", "sin": "Math.sin", "cos": "Math.cos", "tan": "Math.tan", "abs": "Math.abs", "mod": "%", "^": "**"}
 inter_funcs = {"input": "intprtPrompt", "output": "intprtAlert"}
-trans = Object.assign(math_funcs, inter_funcs) # You can create a copy using Object.assign if you dont want the dictionaries being modified
+eval_funcs = {"=": "=="}
 ignore = ["=", "-", "+", "*", "/", "\'", "\"", "(", ")", "<", ">"] # Things that don't have to be translated
 starts = ["\"", "\'"]
 
@@ -22,23 +22,31 @@ separators = new RegExp(scopes_exps + "|" + normal_seps)
 
     hasInterface = false
     inter_keys = Object.keys(inter_funcs)
-    trans_keys = Object.keys(trans)
+    trans_dict = Object.assign(math_funcs, inter_funcs)
+    
+    # Extend the dictionary to eval_funcs if its eval
+    if type is evalName
+        trans_dict = Object.assign(trans_dict, eval_funcs)
+    
+    # All the key_words and functions available to this box's type
+    trans_keys = Object.keys(trans_dict)
+
     for i in [0...exps.length]
         exp = exps[i]
-        # TODO:
         if exp in trans_keys # It is a function
             if exp in inter_keys
                 hasInterface = true
+                # If there is an interface function call in a non inteface box
                 if type isnt interName
                     swal("Error during compilation", "An interface function was found in this non interface box.\nChange the box's text")
                     return
 
-            exps[i] = trans[exp]
+            exps[i] = trans_dict[exp]
 
-        # TODO: covert = to == in evaluation boxes
         else if exp not in ignore and exp[0] not in starts and isNaN exp # It is a var
             exps[i] = "vars_dict[\"" + exp + "\"]"
 
+    # If there is no interface function call in this interface box
     if type is interName and not hasInterface
         swal("Error during compilation", "There is no interface function in this interface box.\nChange the box's text")
 
